@@ -1,0 +1,78 @@
+﻿@page "/User"
+@using Blazor.Server.Sample.Models.User
+@using Blazor.Server.Sample.Common
+@using Blazor.Server.Sample.Data.User
+@using Blazor.Server.Sample.Enums
+@inject IUserClientService _userClientService
+@inject NavigationManager _navigationManager
+
+<div class="col-md-12">
+    <NavLink class="nav-link" href="AddUser">
+        <span class="btn btn-success" aria-hidden="true">AddUser</span>
+    </NavLink>
+</div>
+
+<br/>
+
+<div class="col-md-12">
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    User Name
+                </th>
+                <th>
+                    Full Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Phone Number
+                </th>
+                <th>
+                    Age
+                </th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Is Active
+                </th>
+                <th>
+                    Last Login Date
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (UserSelectApiResult != null)
+            {
+                @foreach (var userSelect in UserSelectApiResult.Data)
+                {
+                    <tr>
+                        <td>@userSelect.UserName</td>
+                        <td>@userSelect.FullName</td>
+                        <td>@userSelect.Email</td>
+                        <td>@userSelect.PhoneNumber</td>
+                        <td>@userSelect.Age</td>
+                        <td>@userSelect.Gender</td>
+                        <td>@userSelect.IsActive</td>
+                        <td>@userSelect.LastLoginDate</td>
+                    </tr>
+                 }
+             }
+        </tbody>
+
+    </table>
+</div>
+
+
+@code { public ApiResult<List<UserSelectDto>> UserSelectApiResult { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        UserSelectApiResult = await _userClientService.GetAllUsersAsync();
+        await Task.CompletedTask;
+    }
+}
