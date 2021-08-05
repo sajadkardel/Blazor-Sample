@@ -2,13 +2,12 @@
 @using Blazor.Server.Sample.Models.User
 @using Blazor.Server.Sample.Common
 @using Blazor.Server.Sample.Data.User
-@using Blazor.Server.Sample.Enums
 @inject IUserClientService _userClientService
 @inject NavigationManager _navigationManager
 
 <div class="col-md-12">
-    <NavLink class="nav-link" href="AddUser">
-        <span class="btn btn-success" aria-hidden="true">AddUser</span>
+    <NavLink class="nav-link" href="AddOrUpdateUser">
+        <button class="btn btn-success">AddUser</button>
     </NavLink>
 </div>
 
@@ -42,13 +41,19 @@
                 <th>
                     Last Login Date
                 </th>
+                <th>
+                    Edit
+                </th>
+                <th>
+                    Delete
+                </th>
             </tr>
         </thead>
 
         <tbody>
-            @if (UserSelectApiResult != null)
+            @if (ApiResult != null)
             {
-                @foreach (var userSelect in UserSelectApiResult.Data)
+                @foreach (var userSelect in ApiResult.Data)
                 {
                     <tr>
                         <td>@userSelect.UserName</td>
@@ -59,6 +64,14 @@
                         <td>@userSelect.Gender</td>
                         <td>@userSelect.IsActive</td>
                         <td>@userSelect.LastLoginDate</td>
+                        <td>
+                            <NavLink class="nav-link" href="@{$"AddOrUpdateUser?username{userSelect.UserName}"}">
+                                <button class="btn btn-warning">Edit</button>
+                            </NavLink>
+                        </td>
+                        <td>
+                          <button class="btn btn-danger" @onclick="() => DeleteUser(userSelect.UserName)"></button>
+                        </td>
                     </tr>
                  }
              }
@@ -68,11 +81,26 @@
 </div>
 
 
-@code { public ApiResult<List<UserSelectDto>> UserSelectApiResult { get; set; }
+@code {
 
+    public ApiResult<List<UserDto>> ApiResult { get; set; }
     protected override async Task OnParametersSetAsync()
     {
-        UserSelectApiResult = await _userClientService.GetAllUsersAsync();
+        ApiResult = await _userClientService.GetAllUsersAsync();
         await Task.CompletedTask;
     }
+
+    protected async void DeleteUser(string userName)
+    {
+        try
+        {
+            await _userClientService.DeleteUserByUserName(userName);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
 }

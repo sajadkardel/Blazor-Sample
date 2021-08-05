@@ -9,8 +9,14 @@ namespace Blazor.Server.Sample.Data.User
     {
         Task<ApiResult<AccessToken>> Token(TokenRequest tokenRequest);
 
-        Task<ApiResult<List<UserSelectDto>>> GetAllUsersAsync();
+        Task<ApiResult<List<UserDto>>> GetAllUsersAsync();
 
-        Task<ApiResult> AddUserAsync(UserDto userDto);
+        Task<ApiResult<UserDto>> GetByIdUser(int id);
+
+        Task<ApiResult<UserDto>> GetByUserName(string userName);
+
+        Task<ApiResult<UserDto>> AddUserAsync(UserDto userDto);
+
+        Task DeleteUserByUserName(string userName);
     }
 }

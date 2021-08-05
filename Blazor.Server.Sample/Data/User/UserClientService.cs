@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Policy;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Blazor.Server.Sample.Common;
 using Blazor.Server.Sample.Models.User;
@@ -40,25 +43,51 @@ namespace Blazor.Server.Sample.Data.User
             return apiResult;
         }
 
-        public async Task<ApiResult<List<UserSelectDto>>> GetAllUsersAsync()
+        public async Task<ApiResult<List<UserDto>>> GetAllUsersAsync()
         {
             var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users");
 
             var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
-            var apiResult = JsonConvert.DeserializeObject<ApiResult<List<UserSelectDto>>>(resultAsString);
+            var apiResult = JsonConvert.DeserializeObject<ApiResult<List<UserDto>>>(resultAsString);
             return apiResult;
         }
 
-        public async Task<ApiResult> AddUserAsync(UserDto userDto)
+        public async Task<ApiResult<UserDto>> GetByIdUser(int id)
         {
-            var toJson = JsonConvert.SerializeObject(userDto);
-            var buffer = System.Text.Encoding.UTF8.GetBytes(toJson);
-            HttpContent byteContent = new ByteArrayContent(buffer);
-            var httpResponseMessage =  await _httpClient.PostAsync($"{_httpClient.BaseAddress}/v1/Users", byteContent);
+            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users?id={id}");
 
             var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
-            var apiResult = JsonConvert.DeserializeObject<ApiResult>(resultAsString);
+            var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
             return apiResult;
+        }
+
+        public async Task<ApiResult<UserDto>> GetByUserName(string userName)
+        {
+            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users?userName={userName}");
+
+            var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
+            var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
+            return apiResult;
+        }
+
+        public async Task<ApiResult<UserDto>> AddUserAsync(UserDto userDto)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"{_httpClient.BaseAddress}/v1/Users");
+            var json = JsonConvert.SerializeObject(userDto);
+            using var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+            request.Content = stringContent;
+
+            using var response = await _httpClient.SendAsync(request);
+
+            var resultAsString = await response.Content.ReadAsStringAsync();
+            var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
+            return apiResult;
+
+        }
+
+        public async Task DeleteUserByUserName(string userName)
+        {
+            await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users?userName={userName}");
         }
     }
 }
