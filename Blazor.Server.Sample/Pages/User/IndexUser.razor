@@ -1,4 +1,4 @@
-﻿@page "/User"
+﻿@page "/IndexUser"
 @using Blazor.Server.Sample.Models.User
 @using Blazor.Server.Sample.Common
 @using Blazor.Server.Sample.Data.User
@@ -67,7 +67,7 @@
                         <td>@userSelect.IsActive</td>
                         <td>@userSelect.LastLoginDate</td>
                         <td>
-                            <NavLink class="nav-link" href="@{$"/UpdateUser/{userSelect.UserName}"}">
+                            <NavLink class="nav-link" href="@{$"EditUser/{userSelect.UserName}"}">
                                 <button class="btn btn-warning">Edit</button>
                             </NavLink>
                         </td>

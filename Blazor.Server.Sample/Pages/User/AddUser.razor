@@ -1,0 +1,76 @@
+﻿@page "/AddUser"
+@using Blazor.Server.Sample.Models.User
+@using Blazor.Server.Sample.Enums
+@using Blazor.Server.Sample.Data.User
+@inject IUserClientService _userClientService
+@inject NavigationManager _navigationManager
+
+
+<EditForm Model="@UserDto" OnValidSubmit="@HandleValidSubmit">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">UserName</span>
+        </div>
+        <input type="text" @bind-value="@UserDto.UserName" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Email</span>
+        </div>
+        <input type="text" @bind-value="@UserDto.Email" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Password</span>
+        </div>
+        <input type="text" @bind-value="@UserDto.Password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
+    </div>
+
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">FullName</span>
+        </div>
+        <input type="text" @bind-value="@UserDto.FullName" class="form-control" placeholder="FullName" aria-label="FullName" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Age</span>
+        </div>
+        <input type="text" @bind-value="@UserDto.Age" class="form-control" placeholder="Age" aria-label="Age" aria-describedby="basic-addon1">
+    </div>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Gender</span>
+        </div>
+        <InputSelect @bind-Value="UserDto.Gender" class="custom-select form-control" aria-describedby="basic-addon1">
+            <option value="@GenderType.Male" selected="selected">Male</option>
+            <option value="@GenderType.Female">Female</option>
+        </InputSelect>
+    </div>
+
+    <br />
+
+    <div class="col-md-12">
+        <button type="submit" class="btn btn-success">
+            save
+        </button>
+    </div>
+
+</EditForm>
+
+@code
+{
+    public UserDto UserDto { get; set; } = new();
+
+    protected async void HandleValidSubmit()
+    {
+        var apiResult = await _userClientService.AddUserAsync(UserDto);
+        _navigationManager.NavigateTo(apiResult.IsSuccess ? "User" : "AddUser", forceLoad: true);
+    }
+}

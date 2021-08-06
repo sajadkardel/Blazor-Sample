@@ -6,6 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Telerik.UI.for.Blazor" Version="2.24.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\Product\" />
   </ItemGroup>
 
 </Project>

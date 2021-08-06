@@ -22,7 +22,7 @@ namespace Blazor.Server.Sample.Data.User
                 ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
             })
             {
-                BaseAddress = new Uri("https://localhost:44314/api")
+                BaseAddress = new Uri("https://localhost:44314/api/v1")
             };
         }
 
@@ -36,7 +36,7 @@ namespace Blazor.Server.Sample.Data.User
                new KeyValuePair<string, string>("grant_type",tokenRequest.grant_type)
             });
 
-            var httpResponseMessage = await _httpClient.PostAsync($"{_httpClient.BaseAddress}/v1/Users/Token", content);
+            var httpResponseMessage = await _httpClient.PostAsync($"{_httpClient.BaseAddress}/Users/Token", content);
 
             var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<AccessToken>>(resultAsString);
@@ -45,7 +45,7 @@ namespace Blazor.Server.Sample.Data.User
 
         public async Task<ApiResult<List<UserDto>>> GetAllUsersAsync()
         {
-            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users");
+            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/Users");
 
             var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<List<UserDto>>>(resultAsString);
@@ -54,7 +54,7 @@ namespace Blazor.Server.Sample.Data.User
 
         public async Task<ApiResult<UserDto>> GetByIdUser(int id)
         {
-            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users?id={id}");
+            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/Users?id={id}");
 
             var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
@@ -63,7 +63,7 @@ namespace Blazor.Server.Sample.Data.User
 
         public async Task<ApiResult<UserDto>> GetByUserName(string userName)
         {
-            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users/GetByUserName?userName={userName}");
+            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/Users/GetByUserName?userName={userName}");
 
             var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
@@ -74,7 +74,7 @@ namespace Blazor.Server.Sample.Data.User
         {
             var json = JsonConvert.SerializeObject(userDto);
             using var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-            using var response = await _httpClient.PostAsync($"{_httpClient.BaseAddress}/v1/Users", stringContent);
+            using var response = await _httpClient.PostAsync($"{_httpClient.BaseAddress}/Users", stringContent);
 
             var resultAsString = await response.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
@@ -84,7 +84,7 @@ namespace Blazor.Server.Sample.Data.User
 
         public async Task<ApiResult> DeleteUserByUserName(string userName)
         {
-            using var response = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/v1/Users/DeleteByUserName?userName={userName}");
+            using var response = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/Users/DeleteByUserName?userName={userName}");
 
             var resultAsString = await response.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult>(resultAsString);
@@ -95,7 +95,7 @@ namespace Blazor.Server.Sample.Data.User
         {
             var json = JsonConvert.SerializeObject(userDto);
             using var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-            using var response = await _httpClient.PutAsync($"{_httpClient.BaseAddress}/v1/Users/UpdateWithGetByUserName?userName={userName}", stringContent);
+            using var response = await _httpClient.PutAsync($"{_httpClient.BaseAddress}/Users/UpdateWithGetByUserName?userName={userName}", stringContent);
 
             var resultAsString = await response.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
