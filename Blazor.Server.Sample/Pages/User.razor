@@ -2,16 +2,18 @@
 @using Blazor.Server.Sample.Models.User
 @using Blazor.Server.Sample.Common
 @using Blazor.Server.Sample.Data.User
+@using Microsoft.AspNetCore.Mvc.Routing
+@using Microsoft.AspNetCore.WebSockets
 @inject IUserClientService _userClientService
 @inject NavigationManager _navigationManager
 
 <div class="col-md-12">
-    <NavLink class="nav-link" href="AddOrUpdateUser">
+    <NavLink class="nav-link" href="AddUser">
         <button class="btn btn-success">AddUser</button>
     </NavLink>
 </div>
 
-<br/>
+<br />
 
 <div class="col-md-12">
     <table class="table table-bordered">
@@ -65,16 +67,16 @@
                         <td>@userSelect.IsActive</td>
                         <td>@userSelect.LastLoginDate</td>
                         <td>
-                            <NavLink class="nav-link" href="@{$"AddOrUpdateUser?username{userSelect.UserName}"}">
+                            <NavLink class="nav-link" href="@{$"/UpdateUser/{userSelect.UserName}"}">
                                 <button class="btn btn-warning">Edit</button>
                             </NavLink>
                         </td>
                         <td>
-                          <button class="btn btn-danger" @onclick="() => DeleteUser(userSelect.UserName)"></button>
+                            <button class="btn btn-danger" @onclick="() => DeleteUser(userSelect.UserName)">Delete</button>
                         </td>
                     </tr>
-                 }
-             }
+                }
+            }
         </tbody>
 
     </table>
@@ -84,7 +86,7 @@
 @code {
 
     public ApiResult<List<UserDto>> ApiResult { get; set; }
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         ApiResult = await _userClientService.GetAllUsersAsync();
         await Task.CompletedTask;
@@ -92,15 +94,8 @@
 
     protected async void DeleteUser(string userName)
     {
-        try
-        {
-            await _userClientService.DeleteUserByUserName(userName);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        var apiResult = await _userClientService.DeleteUserByUserName(userName);
+        _navigationManager.NavigateTo("User",true);
     }
 
 }

@@ -11,12 +11,12 @@ namespace Blazor.Server.Sample.Data.User
 
         Task<ApiResult<List<UserDto>>> GetAllUsersAsync();
 
-        Task<ApiResult<UserDto>> GetByIdUser(int id);
-
         Task<ApiResult<UserDto>> GetByUserName(string userName);
 
         Task<ApiResult<UserDto>> AddUserAsync(UserDto userDto);
 
-        Task DeleteUserByUserName(string userName);
+        Task<ApiResult> DeleteUserByUserName(string userName);
+
+        Task<ApiResult<UserDto>> UpdateUserByUserName(string userName , UserDto userDto);
     }
 }

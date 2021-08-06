@@ -63,7 +63,7 @@ namespace Blazor.Server.Sample.Data.User
 
         public async Task<ApiResult<UserDto>> GetByUserName(string userName)
         {
-            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users?userName={userName}");
+            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users/GetByUserName?userName={userName}");
 
             var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
@@ -72,12 +72,9 @@ namespace Blazor.Server.Sample.Data.User
 
         public async Task<ApiResult<UserDto>> AddUserAsync(UserDto userDto)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Post, $"{_httpClient.BaseAddress}/v1/Users");
             var json = JsonConvert.SerializeObject(userDto);
             using var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-            request.Content = stringContent;
-
-            using var response = await _httpClient.SendAsync(request);
+            using var response = await _httpClient.PostAsync($"{_httpClient.BaseAddress}/v1/Users", stringContent);
 
             var resultAsString = await response.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
@@ -85,9 +82,24 @@ namespace Blazor.Server.Sample.Data.User
 
         }
 
-        public async Task DeleteUserByUserName(string userName)
+        public async Task<ApiResult> DeleteUserByUserName(string userName)
         {
-            await _httpClient.GetAsync($"{_httpClient.BaseAddress}/v1/Users?userName={userName}");
+            using var response = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/v1/Users/DeleteByUserName?userName={userName}");
+
+            var resultAsString = await response.Content.ReadAsStringAsync();
+            var apiResult = JsonConvert.DeserializeObject<ApiResult>(resultAsString);
+            return apiResult;
+        }
+
+        public async Task<ApiResult<UserDto>> UpdateUserByUserName(string userName, UserDto userDto)
+        {
+            var json = JsonConvert.SerializeObject(userDto);
+            using var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+            using var response = await _httpClient.PutAsync($"{_httpClient.BaseAddress}/v1/Users/UpdateWithGetByUserName?userName={userName}", stringContent);
+
+            var resultAsString = await response.Content.ReadAsStringAsync();
+            var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
+            return apiResult;
         }
     }
 }

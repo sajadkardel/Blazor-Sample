@@ -1,10 +1,8 @@
-﻿@page "/AddOrUpdateUser"
-@page "/AddOrUpdateUser/{userName}"
+﻿@page "/AddUser"
+@page "/UpdateUser/{UserName}"
 @using Blazor.Server.Sample.Models.User
 @using Blazor.Server.Sample.Enums
 @using Blazor.Server.Sample.Data.User
-@using Blazor.Server.Sample.Common
-@using Microsoft.AspNetCore.WebUtilities
 @inject IUserClientService _userClientService
 @inject NavigationManager _navigationManager
 
@@ -69,31 +67,35 @@
 
 @code {
 
-    protected UserDto UserDto = new();
+    [Parameter]
+    public string UserName { get; set; }
 
+    public UserDto UserDto { get; set; } = new();
     protected override async Task OnInitializedAsync()
     {
-        var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
-        var queryStrings = QueryHelpers.ParseQuery(uri.Query);
-        if (queryStrings.TryGetValue("userName", out var userName))
+        if (UserName != null)
         {
-            var apiResult = await _userClientService.GetByUserName(userName);
+            //Edit
+            var apiResult = await _userClientService.GetByUserName(UserName);
             UserDto = apiResult.Data;
+
         }
     }
 
-
     protected async void HandleValidSubmit()
     {
-        var apiResult = await _userClientService.AddUserAsync(UserDto);
-
-        if (apiResult.IsSuccess)
+        if (UserName != null)
         {
-            _navigationManager.NavigateTo("User");
+            //Edit
+            var apiResult = await _userClientService.UpdateUserByUserName(UserName, UserDto);
+            _navigationManager.NavigateTo(apiResult.IsSuccess ? "User" : $"/UpdateUser/{UserName}", forceLoad: true);
         }
         else
         {
-            _navigationManager.NavigateTo("AddOrUpdateUser");
+            //Add
+            var apiResult = await _userClientService.AddUserAsync(UserDto);
+            _navigationManager.NavigateTo(apiResult.IsSuccess ? "User" : $"/UpdateUser/{UserName}", forceLoad: true);
         }
+
     }
 }
