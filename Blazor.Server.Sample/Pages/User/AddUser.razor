@@ -74,12 +74,12 @@
         var apiResult = await _userClientService.AddUserAsync(UserDto);
         if (apiResult.IsSuccess)
         {
-            //await _jsRuntime.ToastrSuccess("this is succeeded");
+            await _jsRuntime.ToastrSuccess("Add User");
             _navigationManager.NavigateTo("IndexUser");
         }
         else
         {
-            //await _jsRuntime.ToastrError("this is error");
+            await _jsRuntime.ToastrError("Add User");
             _navigationManager.NavigateTo("AddUser" , true);
         }
     }

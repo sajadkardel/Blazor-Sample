@@ -98,12 +98,12 @@
         var apiResult = await _userClientService.DeleteUserByUserName(userName);
         if (apiResult.IsSuccess)
         {
-            //await _jsRuntime.ToastrSuccess("this is succeeded");
+            await _jsRuntime.ToastrSuccess("delete User");
             _navigationManager.NavigateTo("IndexUser", true);
         }
         else
         {
-            //await _jsRuntime.ToastrError("this is error");
+            await _jsRuntime.ToastrError("delete User");
             _navigationManager.NavigateTo("IndexUser", true);
         }
 

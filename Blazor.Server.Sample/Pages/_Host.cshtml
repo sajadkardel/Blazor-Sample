@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
     <link rel="stylesheet" href="_content/Telerik.UI.for.Blazor/css/kendo-theme-default/all.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
     <link href="Blazor.Server.Sample.styles.css" rel="stylesheet" />
 </head>
 <body>
@@ -32,9 +32,10 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="~/js/Custom.js"></script>
     <script src="_content/Telerik.UI.for.Blazor/js/telerik-blazor.js" defer></script>
-<script src="_framework/blazor.server.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+    <script src="_framework/blazor.server.js"></script>
 </body>
 </html>
