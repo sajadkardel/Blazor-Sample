@@ -1,9 +1,38 @@
 ﻿@page "/IndexCategory"
 @using Telerik.Blazor
 @using Telerik.Blazor.Components
+@using Telerik.DataSource.Extensions;
+@using System.Data
+@using Blazor.Server.Sample.Data.Product
+@using Blazor.Server.Sample.Models.Product
+@inject ICategoryClientService _categoryClientService
 
-<TelerikButton>Say Hello</TelerikButton>
+<TelerikGrid Data=@GridData
+             TotalCount=@Total
+             Height="480px"
+             FilterMode="@GridFilterMode.FilterRow"
+             Sortable=true
+             Pageable=true
+             OnRead=@ReadItems>
+    <GridColumns>
+        <GridColumn Field=@nameof(CategoryDto.Name) />
+    </GridColumns>
+</TelerikGrid>
 
 @code {
+
+    public List<CategoryDto> GridData { get; set; }
+    public int Total { get; set; } = 0;
+
+    protected async void ReadItems(GridReadEventArgs args)
+    {
+        var apiResult = await _categoryClientService.GetAllCategory();
+        var datasourceResult = await apiResult.Data.ToDataSourceResultAsync(args.Request);
+
+        GridData = (datasourceResult.Data as IEnumerable<CategoryDto> ?? Array.Empty<CategoryDto>()).ToList();
+        Total = datasourceResult.Total;
+
+        StateHasChanged();
+    }
 
 }
