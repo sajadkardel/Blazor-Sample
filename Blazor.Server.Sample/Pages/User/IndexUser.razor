@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.WebSockets
 @inject IUserClientService _userClientService
 @inject NavigationManager _navigationManager
+@inject IJSRuntime _jsRuntime
 
 <div class="col-md-12">
     <NavLink class="nav-link" href="AddUser">
@@ -95,7 +96,17 @@
     protected async void DeleteUser(string userName)
     {
         var apiResult = await _userClientService.DeleteUserByUserName(userName);
-        _navigationManager.NavigateTo("User",true);
+        if (apiResult.IsSuccess)
+        {
+            //await _jsRuntime.ToastrSuccess("this is succeeded");
+            _navigationManager.NavigateTo("IndexUser", true);
+        }
+        else
+        {
+            //await _jsRuntime.ToastrError("this is error");
+            _navigationManager.NavigateTo("IndexUser", true);
+        }
+
     }
 
 }

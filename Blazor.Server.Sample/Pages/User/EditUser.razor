@@ -3,9 +3,10 @@
 @using Blazor.Server.Sample.Enums
 @using Blazor.Server.Sample.Models.User
 @using Blazor.Server.Sample.Data.User
+@using Blazor.Server.Sample.Common
 @inject IUserClientService _userClientService
 @inject NavigationManager _navigationManager
-
+@inject IJSRuntime _jsRuntime
 
 <EditForm Model="@UserDto" OnValidSubmit="@HandleValidSubmit">
 
@@ -80,7 +81,16 @@
     protected async void HandleValidSubmit()
     {
         var apiResult = await _userClientService.UpdateUserByUserName(UserName, UserDto);
-        _navigationManager.NavigateTo(apiResult.IsSuccess ? "User" : $"EditUser/{UserName}", forceLoad: true);
+        if (apiResult.IsSuccess)
+        {
+            //await _jsRuntime.ToastrSuccess("this is succeeded");
+            _navigationManager.NavigateTo("IndexUser");
+        }
+        else
+        {
+            //await _jsRuntime.ToastrError("this is error");
+            _navigationManager.NavigateTo($"EditUser/{UserName}",true);
+        }
     }
 
 }

@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@using Telerik.Blazor
+@using Telerik.Blazor.Components
 
 <div class="page">
     <div class="sidebar">
@@ -11,6 +13,9 @@
         </div>
 
         <div class="content px-4">
+            @*<TelerikRootComponent>
+                @Body
+            </TelerikRootComponent>*@
             @Body
         </div>
     </div>

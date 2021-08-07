@@ -95,7 +95,7 @@ namespace Blazor.Server.Sample.Data.User
         {
             var json = JsonConvert.SerializeObject(userDto);
             using var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-            using var response = await _httpClient.PutAsync($"{_httpClient.BaseAddress}/Users/UpdateWithGetByUserName?userName={userName}", stringContent);
+            using var response = await _httpClient.PutAsync($"{_httpClient.BaseAddress}/Users/UpdateByUserName?userName={userName}", stringContent);
 
             var resultAsString = await response.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<UserDto>>(resultAsString);
