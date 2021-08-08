@@ -3,27 +3,42 @@
 @using Telerik.Blazor.Components
 @using Telerik.DataSource.Extensions;
 @using System.Data
+@using Blazor.Server.Sample.Common
 @using Blazor.Server.Sample.Data.Product
 @using Blazor.Server.Sample.Models.Product
 @inject ICategoryClientService _categoryClientService
+@inject NavigationManager _navigationManager
+@inject IJSRuntime _jsRuntime
 
-<TelerikGrid Data=@GridData
-             TotalCount=@Total
-             Height="480px"
-             FilterMode="@GridFilterMode.FilterRow"
-             Sortable=true
-             Pageable=true
-             OnRead=@ReadItems>
-    <GridColumns>
-        <GridColumn Field=@nameof(CategoryDto.Name) />
-    </GridColumns>
-</TelerikGrid>
+<div class="col-md-12">
+    <div class="btn-group">
+        <button class="btn btn-success" @onclick="Add">Add</button>
+        <button class="btn btn-warning" @onclick="Edit">Edit</button>
+        <button class="btn btn-danger" @onclick="Delete">Delete</button>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <TelerikGrid Data=@GridData
+                 TotalCount=@Total
+                 Height="480px"
+                 FilterMode="@GridFilterMode.FilterRow"
+                 SelectionMode="GridSelectionMode.Single"
+                 SelectedItemsChanged="@((IEnumerable<CategoryDto> categoryDtos) => OnSelect(categoryDtos))"
+                 Sortable=true
+                 Pageable=true
+                 OnRead=@ReadItems>
+        <GridColumns>
+            <GridColumn Field=@nameof(CategoryDto.Id) Visible="false" />
+            <GridColumn Field=@nameof(CategoryDto.Name) />
+        </GridColumns>
+    </TelerikGrid>
+</div>
 
 @code {
 
     public List<CategoryDto> GridData { get; set; }
     public int Total { get; set; } = 0;
-
     protected async void ReadItems(GridReadEventArgs args)
     {
         var apiResult = await _categoryClientService.GetAllCategory();
@@ -35,4 +50,33 @@
         StateHasChanged();
     }
 
+    public CategoryDto SelectedCategory { get; set; }
+    protected void OnSelect(IEnumerable<CategoryDto> categoryDtos)
+    {
+        SelectedCategory = categoryDtos.FirstOrDefault();
+    }
+
+    protected void Add()
+    {
+        _navigationManager.NavigateTo("AddCategory");
+    }
+
+    protected void Edit()
+    {
+        _navigationManager.NavigateTo($"EditCategory/{SelectedCategory.Id}");
+    }
+
+    protected async void Delete()
+    {
+        var apiResult = await _categoryClientService.RemoveByIdCategory(SelectedCategory.Id);
+        if (apiResult is {IsSuccess: true })
+        {
+            await _jsRuntime.ToastrSuccess("Delete Category");
+            _navigationManager.NavigateTo("IndexCategory", true);
+        }
+        else
+        {
+            await _jsRuntime.ToastrError("Delete Category");
+        }
+    }
 }

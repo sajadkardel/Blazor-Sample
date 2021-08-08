@@ -36,7 +36,7 @@ namespace Blazor.Server.Sample.Data.Product
 
         public async Task<ApiResult<CategoryDto>> GetByIdCategory(int id)
         {
-            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/Category?id={id}");
+            var httpResponseMessage = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/Category/{id}");
 
             var resultAsString = await httpResponseMessage.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<CategoryDto>>(resultAsString);
@@ -58,7 +58,7 @@ namespace Blazor.Server.Sample.Data.Product
         {
             var json = JsonConvert.SerializeObject(dto);
             using var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-            using var response = await _httpClient.PutAsync($"{_httpClient.BaseAddress}/Category?id={id}", stringContent);
+            using var response = await _httpClient.PutAsync($"{_httpClient.BaseAddress}/Category/{id}", stringContent);
 
             var resultAsString = await response.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult<CategoryDto>>(resultAsString);
@@ -67,7 +67,7 @@ namespace Blazor.Server.Sample.Data.Product
 
         public async Task<ApiResult> RemoveByIdCategory(int id)
         {
-            using var response = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/Category?id={id}");
+            using var response = await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/Category/{id}");
 
             var resultAsString = await response.Content.ReadAsStringAsync();
             var apiResult = JsonConvert.DeserializeObject<ApiResult>(resultAsString);

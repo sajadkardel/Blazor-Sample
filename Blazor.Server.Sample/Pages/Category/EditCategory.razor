@@ -1,5 +1,55 @@
-﻿<h3>EditCategory</h3>
+﻿@page "/EditCategory/{id:int}"
+@using Microsoft.AspNetCore.Components
+@using Blazor.Server.Sample.Models.Product
+@using Blazor.Server.Sample.Data.Product
+@using Blazor.Server.Sample.Common
+@inject NavigationManager _navigationManager
+@inject ICategoryClientService _categoryClientService
+@inject IJSRuntime _jsRuntime
+
+<EditForm Model="@CategoryDto" OnValidSubmit="@HandleValidSubmit">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Name</span>
+        </div>
+        <input type="text" @bind-value="@CategoryDto.Name" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+
+    <br />
+
+    <div class="col-md-12">
+        <button type="submit" class="btn btn-warning">
+            save
+        </button>
+    </div>
+
+</EditForm>
 
 @code {
 
+    [Parameter]
+    public int Id { get; set; }
+    public CategoryDto CategoryDto { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        var apiResult = await _categoryClientService.GetByIdCategory(Id);
+        CategoryDto = apiResult.Data;
+    }
+
+
+    protected async void HandleValidSubmit()
+    {
+        var apiResult = await _categoryClientService.UpdateByIdCategory(Id, CategoryDto);
+        if (apiResult is {IsSuccess: true })
+        {
+            await _jsRuntime.ToastrSuccess("Edit Category");
+            _navigationManager.NavigateTo("IndexCategory");
+        }
+        else
+        {
+            await _jsRuntime.ToastrError("Edit Category");
+            _navigationManager.NavigateTo($"EditCategory/{Id}", true);
+        }
+    }
 }

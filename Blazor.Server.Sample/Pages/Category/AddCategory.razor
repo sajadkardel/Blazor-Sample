@@ -1,5 +1,47 @@
-﻿<h3>AddCategory</h3>
+﻿@page "/AddCategory"
+@using Blazor.Server.Sample.Enums
+@using Blazor.Server.Sample.Models.Product
+@using Blazor.Server.Sample.Data.Product
+@using Blazor.Server.Sample.Common
+@inject NavigationManager _navigationManager
+@inject ICategoryClientService _categoryClientService
+@inject IJSRuntime _jsRuntime
+
+<EditForm Model="@CategoryDto" OnValidSubmit="@HandleValidSubmit">
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Name</span>
+        </div>
+        <input type="text" @bind-value="@CategoryDto.Name" class="form-control" placeholder="Name" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+
+    <br />
+
+    <div class="col-md-12">
+        <button type="submit" class="btn btn-success">
+            save
+        </button>
+    </div>
+
+</EditForm>
 
 @code {
 
+    public CategoryDto CategoryDto { get; set; } = new();
+
+    protected async void HandleValidSubmit()
+    {
+        var apiResult = await _categoryClientService.AddCategory(CategoryDto);
+        if (apiResult is { IsSuccess: true })
+        {
+            await _jsRuntime.ToastrSuccess("Add Category");
+            _navigationManager.NavigateTo("IndexCategory");
+        }
+        else
+        {
+            await _jsRuntime.ToastrError("Add Category");
+            _navigationManager.NavigateTo("AddCategory", true);
+        }
+    }
 }

@@ -96,7 +96,7 @@
     protected async void DeleteUser(string userName)
     {
         var apiResult = await _userClientService.DeleteUserByUserName(userName);
-        if (apiResult.IsSuccess)
+        if (apiResult is { IsSuccess: true })
         {
             await _jsRuntime.ToastrSuccess("delete User");
             _navigationManager.NavigateTo("IndexUser", true);

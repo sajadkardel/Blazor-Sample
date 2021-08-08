@@ -72,7 +72,7 @@
     protected async void HandleValidSubmit()
     {
         var apiResult = await _userClientService.AddUserAsync(UserDto);
-        if (apiResult.IsSuccess)
+        if (apiResult is { IsSuccess: true })
         {
             await _jsRuntime.ToastrSuccess("Add User");
             _navigationManager.NavigateTo("IndexUser");
