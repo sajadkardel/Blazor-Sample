@@ -35,6 +35,9 @@
     </TelerikGrid>
 </div>
 
+
+<DeleteConfirmation></DeleteConfirmation>
+
 @code {
 
     public List<CategoryDto> GridData { get; set; }
@@ -69,10 +72,10 @@
     protected async void Delete()
     {
         var apiResult = await _categoryClientService.RemoveByIdCategory(SelectedCategory.Id);
-        if (apiResult is {IsSuccess: true })
+        if (apiResult is { IsSuccess: true })
         {
             await _jsRuntime.ToastrSuccess("Delete Category");
-            _navigationManager.NavigateTo("IndexCategory", true);
+            ReadItems(new GridReadEventArgs());
         }
         else
         {

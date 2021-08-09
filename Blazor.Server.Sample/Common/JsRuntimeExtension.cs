@@ -18,5 +18,14 @@ namespace Blazor.Server.Sample.Common
             await jSRuntime.InvokeVoidAsync("ShowToastr", "error", message);
         }
 
+        public static async ValueTask ShowDeleteConfirmationModal(this IJSRuntime jSRuntime)
+        {
+            await jSRuntime.InvokeVoidAsync("showConfirmationModal");
+        }
+
+        public static async ValueTask HideDeleteConfirmationModal(this IJSRuntime jSRuntime)
+        {
+            await jSRuntime.InvokeVoidAsync("hideConfirmationModal");
+        }
     }
 }

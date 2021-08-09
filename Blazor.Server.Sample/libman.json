@@ -16,6 +16,13 @@
         "toastr.min.js",
         "toastr.min.css"
       ]
+    },
+    {
+      "library": "bootstrap@5.1.0",
+      "destination": "wwwroot/lib/bootstrap/",
+      "files": [
+        "js/bootstrap.min.js"
+      ]
     }
   ]
 }

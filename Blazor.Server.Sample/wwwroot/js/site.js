@@ -6,3 +6,11 @@
         toastr.error(message, 'error');
     }
 }
+
+function showConfirmationModal() {
+    $('#delete-confirm-modal').modal('show');
+}
+
+function hideConfirmationModal() {
+    $('#delete-confirm-modal').modal('hide');
+}

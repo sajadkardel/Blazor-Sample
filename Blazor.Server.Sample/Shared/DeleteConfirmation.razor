@@ -1,0 +1,36 @@
+﻿@using Blazor.Server.Sample.Common
+@inject IJSRuntime _jsRuntime
+
+<div class="modal" tabindex="-1" role="dialog" id="delete-confirm-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" @onclick="()=>CheckConfirm(false)" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" @onclick="()=>CheckConfirm(true)" class="btn btn-danger">Confirm</button>
+                <button type="button" @onclick="()=>CheckConfirm(false)" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    protected async void CheckConfirm(bool isConfirm)
+    {
+        if (isConfirm)
+        {
+            
+        }
+        else
+        {
+            await _jsRuntime.HideDeleteConfirmationModal();
+        }
+    }
+
+}
