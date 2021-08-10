@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blazor.Server.Sample.Data.Product;
 using Blazor.Server.Sample.Data.User;
+using Blazor.Server.Sample.Hubs;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace Blazor.Server.Sample
 {
@@ -32,7 +34,11 @@ namespace Blazor.Server.Sample
             services.AddServerSideBlazor();
 
             services.AddTelerikBlazor();
-
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
             services.AddHttpClient();
 
             services.AddSingleton<IUserClientService, UserClientService>();
@@ -43,6 +49,8 @@ namespace Blazor.Server.Sample
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -62,6 +70,7 @@ namespace Blazor.Server.Sample
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
+                endpoints.MapHub<ChatHub>("/chathub");
                 endpoints.MapFallbackToPage("/_Host");
             });
         }
